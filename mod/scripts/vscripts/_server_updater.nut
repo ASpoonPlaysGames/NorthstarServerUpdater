@@ -16,9 +16,7 @@ void function ServerUpdateChecker_Init()
 {
 	// wait for file write
 	thread WaitForFileWrite()
-	// warn clients
-	// wait max time or match end or everyone left
-	// kill server
+
 	AddCallback_OnClientDisconnected( OnClientDisconnected )
 	AddCallback_GameStateEnter( eGameState.Postmatch, OnMatchEnd )
 }
@@ -29,9 +27,7 @@ void function WaitForFileWrite()
 	{
 		// if the file doesn't exist, then just assume there is no update
 		if ( NSDoesFileExist( UPDATE_FILE ) )
-		{
 			NSLoadFile( UPDATE_FILE, OnFileReadSuccess, OnFileReadFailure )
-		}
 		else
 			printt( "update file could not be found" )
 		
@@ -97,7 +93,7 @@ void function OnMatchEnd()
 void function WarnPlayersAboutUpdate_Threaded()
 {
 	int minsRemaining = MAX_UPDATE_DELAY_MINS
-	while(true)
+	while ( file.hasFoundUpdate )
 	{
 		Chat_ServerBroadcast( format( "Server will update in \x1b[93m%i minutes\x1b[110m or after the current match ends.", minsRemaining ) )
 		wait DISCONNECT_WARNING_DELAY_MINS * 60
